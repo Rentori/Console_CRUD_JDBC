@@ -2,7 +2,7 @@ package service;
 
 import model.Post;
 import repository.PostRepository;
-import repository.io.PostRepositoryImpl;
+import repository.jdbc.PostRepositoryImpl;
 
 import java.util.List;
 

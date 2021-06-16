@@ -2,7 +2,7 @@ package service;
 
 import model.Writer;
 import repository.WriterRepository;
-import repository.io.WriterRepositoryImpl;
+import repository.jdbc.WriterRepositoryImpl;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package repository.io;
+package repository.jdbc;
 
 import model.Post;
 import model.Writer;
@@ -13,13 +13,11 @@ public class WriterRepositoryImpl implements WriterRepository {
     private static WriterRepository instance;
     PostRepositoryImpl postRepository = PostRepositoryImpl.getInstance();
     ConnectionService connectionService = new ConnectionService();
-    ResultSet resultSet = null;
-    Connection connection = null;
 
-    private WriterRepositoryImpl(){
+    private WriterRepositoryImpl() {
     }
 
-    public static WriterRepository getInstance(){
+    public static WriterRepository getInstance() {
         if (instance == null) {
             instance = new WriterRepositoryImpl();
         }
@@ -28,7 +26,7 @@ public class WriterRepositoryImpl implements WriterRepository {
 
     @Override
     public Writer save(Writer type) {
-        connection = connectionService.getConnection();
+        Connection connection = connectionService.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("INSERT INTO Writers (FirstName, LastName) value (?, ?)");
@@ -68,19 +66,19 @@ public class WriterRepositoryImpl implements WriterRepository {
     public Writer getById(Long aLong) {
         Writer writer = null;
         List<Post> postList = null;
-        connection = connectionService.getConnection();
+        Connection connection = connectionService.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("SELECT * FROM Writers WHERE ID = ?");
             preparedStatement.setLong(1, aLong);
-            resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
 
             Long id = resultSet.getLong("ID");
             postList = postRepository.returnPostsByWriterId(id);
             String firstName = resultSet.getString("FirstName");
             String lastName = resultSet.getString("LastName");
-            writer = new Writer(id ,firstName, lastName, postList);
+            writer = new Writer(id, firstName, lastName, postList);
 
             resultSet.close();
             preparedStatement.close();
@@ -93,7 +91,7 @@ public class WriterRepositoryImpl implements WriterRepository {
 
     @Override
     public void deleteById(Long aLong) {
-        connection = connectionService.getConnection();
+        Connection connection = connectionService.getConnection();
         try {
             PreparedStatement statement = connection
                     .prepareStatement("DELETE FROM Writers WHERE ID = ?");
@@ -109,11 +107,11 @@ public class WriterRepositoryImpl implements WriterRepository {
 
     @Override
     public List<Writer> getAll() {
-        connection = connectionService.getConnection();
+        Connection connection = connectionService.getConnection();
         List<Writer> writerList = null;
         try {
             Statement statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM Writers");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM Writers");
             writerList = getWritersFromSql(resultSet);
             statement.close();
             connection.close();

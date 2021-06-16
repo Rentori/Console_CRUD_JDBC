@@ -1,4 +1,4 @@
-package repository.io;
+package repository.jdbc;
 
 import model.Label;
 import repository.LabelRepository;
@@ -10,12 +10,7 @@ import java.util.List;
 
 public class LabelRepositoryImpl implements LabelRepository {
     private static LabelRepositoryImpl instance;
-    private ResultSet resultSet = null;
     private final ConnectionService connectionService = new ConnectionService();
-    private Connection connection = null;
-    private Long id = null;
-    private Long postId = null;
-    private String name = null;
 
 
     private LabelRepositoryImpl() {
@@ -30,7 +25,7 @@ public class LabelRepositoryImpl implements LabelRepository {
 
     @Override
     public Label save(Label type) {
-        connection = connectionService.getConnection();
+        Connection connection = connectionService.getConnection();
         try {
             PreparedStatement statement = connection
                     .prepareStatement("INSERT INTO Labels (Name, PostId) value (?, ?)");
@@ -48,7 +43,7 @@ public class LabelRepositoryImpl implements LabelRepository {
 
     @Override
     public Label update(Label type) {
-        connection = connectionService.getConnection();
+        Connection connection = connectionService.getConnection();
         try {
             PreparedStatement statement = connection
                     .prepareStatement("UPDATE Labels SET Name = ? WHERE ID = ?");
@@ -67,17 +62,17 @@ public class LabelRepositoryImpl implements LabelRepository {
     @Override
     public Label getById(Long aLong) {
         Label label = null;
-        connection = connectionService.getConnection();
+        Connection connection = connectionService.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("SELECT * FROM Labels WHERE ID = ?");
             preparedStatement.setLong(1, aLong);
 
-            resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
-            id = resultSet.getLong("ID");
-            name = resultSet.getString("Name");
-            postId = resultSet.getLong("PostId");
+            Long id = resultSet.getLong("ID");
+            String name = resultSet.getString("Name");
+            Long postId = resultSet.getLong("PostId");
             label = new Label(id, name, postId);
 
             resultSet.close();
@@ -91,7 +86,7 @@ public class LabelRepositoryImpl implements LabelRepository {
 
     @Override
     public void deleteById(Long aLong) {
-        connection = connectionService.getConnection();
+        Connection connection = connectionService.getConnection();
         try {
             PreparedStatement statement = connection
                     .prepareStatement("DELETE FROM Labels WHERE ID = ?");
@@ -108,10 +103,10 @@ public class LabelRepositoryImpl implements LabelRepository {
     @Override
     public List<Label> getAll() {
         List<Label> labelList = null;
-        connection = connectionService.getConnection();
+        Connection connection = connectionService.getConnection();
         try {
             Statement statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM Labels");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM Labels");
             labelList = getLabelListFromSQL(resultSet);
 
             statement.close();
@@ -126,20 +121,20 @@ public class LabelRepositoryImpl implements LabelRepository {
         List<Label> labelList = new ArrayList<>();
 
         while (resultSet.next()) {
-            id = resultSet.getLong("ID");
-            name = resultSet.getString("Name");
-            postId = resultSet.getLong("PostId");
+            Long id = resultSet.getLong("ID");
+            String name = resultSet.getString("Name");
+            Long postId = resultSet.getLong("PostId");
             labelList.add(new Label(id, name, postId));
         }
         return labelList;
     }
 
     public List<Label> returnLabelsByPostId(Long id) throws SQLException {
-        connection = connectionService.getConnection();
+        Connection connection = connectionService.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement("select * from labels\n" +
                 "where PostId = ?");
         preparedStatement.setLong(1, id);
-        resultSet = preparedStatement.executeQuery();
+        ResultSet resultSet = preparedStatement.executeQuery();
 
 
         return getLabelListFromSQL(resultSet);

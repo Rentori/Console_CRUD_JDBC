@@ -1,4 +1,4 @@
-package repository.io;
+package repository.jdbc;
 
 import junit.framework.TestCase;
 import model.Post;

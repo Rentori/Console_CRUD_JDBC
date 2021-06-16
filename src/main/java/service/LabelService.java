@@ -2,7 +2,7 @@ package service;
 
 import model.Label;
 import repository.LabelRepository;
-import repository.io.LabelRepositoryImpl;
+import repository.jdbc.LabelRepositoryImpl;
 
 import java.util.List;
 

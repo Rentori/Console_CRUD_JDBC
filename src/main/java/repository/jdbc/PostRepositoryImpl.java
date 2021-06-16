@@ -1,4 +1,4 @@
-package repository.io;
+package repository.jdbc;
 
 import model.Label;
 import model.Post;
@@ -16,11 +16,6 @@ public class PostRepositoryImpl implements PostRepository {
     private final ConnectionService connectionService = new ConnectionService();
     private final LabelRepositoryImpl labelRepository = LabelRepositoryImpl.getInstance();
 
-    private ResultSet resultSet = null;
-    private Connection connection = null;
-    private final Long id = null;
-    private final String name = null;
-
     private PostRepositoryImpl() {
     }
 
@@ -33,7 +28,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public Post save(Post type) {
-        connection = connectionService.getConnection();
+        Connection connection = connectionService.getConnection();
         try {
             PreparedStatement statement = connection
                     .prepareStatement("INSERT INTO Posts (Content, Created, Updated, PostStatus, WriterId)\n" +
@@ -55,7 +50,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public Post update(Post type) {
-        connection = connectionService.getConnection();
+        Connection connection = connectionService.getConnection();
         try {
             PreparedStatement statement = connection
                     .prepareStatement("UPDATE Posts  \n" +
@@ -78,12 +73,12 @@ public class PostRepositoryImpl implements PostRepository {
     public Post getById(Long aLong) {
         Post post = null;
         List<Label> labels = null;
-        connection = connectionService.getConnection();
+        Connection connection = connectionService.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("SELECT * FROM Posts WHERE ID = ?");
             preparedStatement.setLong(1, aLong);
-            resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
 
             Long id = resultSet.getLong("ID");
@@ -106,7 +101,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public void deleteById(Long aLong) {
-        connection = connectionService.getConnection();
+        Connection connection = connectionService.getConnection();
         try {
             PreparedStatement statement = connection
                     .prepareStatement("UPDATE Posts SET PostStatus = ? WHERE ID = ?");
@@ -123,11 +118,11 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> getAll() {
-        connection = connectionService.getConnection();
+        Connection connection = connectionService.getConnection();
         List<Post> postList = null;
         try {
             Statement statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM Posts");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM Posts");
             postList = getPostListFromSql(resultSet);
             statement.close();
             connection.close();
@@ -159,11 +154,11 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     public List<Post> returnPostsByWriterId(Long id) throws SQLException {
-        connection = connectionService.getConnection();
+        Connection connection = connectionService.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement("select * from posts\n" +
                 "where WriterId = ?");
         preparedStatement.setLong(1, id);
-        resultSet = preparedStatement.executeQuery();
+        ResultSet resultSet = preparedStatement.executeQuery();
 
 
         return getPostListFromSql(resultSet);
