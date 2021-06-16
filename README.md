@@ -22,7 +22,7 @@
 
 ШАБЛОНЫ ПРОЕКТИРОВАНИЯ:
 
-1) Singletone
+1) Singleton
 2) Factory method
 3) MVC
 
