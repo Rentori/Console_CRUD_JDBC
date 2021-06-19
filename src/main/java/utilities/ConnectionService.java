@@ -10,7 +10,7 @@ public class ConnectionService {
     private final String DRIVER = "com.mysql.jdbc.Driver";
     private final String URL = "jdbc:mysql://localhost/crud_jdbc";
     private final String USER = "root";
-    private final String PASSWORD = "1788rentorry4815";
+    private final String PASSWORD = "root";
 
     public Connection getConnection() {
         try {
