@@ -45,18 +45,20 @@ public class MainView implements View{
         }
     }
 
-    public void getView(String operation) {
-        if (operation.equals("1")) {
-            viewFactory = new LabelViewFactory();
-            view = viewFactory.getView();
-        }
-        else if (operation.equals("2")) {
-            viewFactory = new PostViewFactory();
-            view = viewFactory.getView();
-        }
-        else if (operation.equals("3")) {
-            viewFactory = new WriterViewFactory();
-            view = viewFactory.getView();
+    private void getView(String operation) {
+        switch (operation) {
+            case "1" -> {
+                viewFactory = new LabelViewFactory();
+                view = viewFactory.getView();
+            }
+            case "2" -> {
+                viewFactory = new PostViewFactory();
+                view = viewFactory.getView();
+            }
+            case "3" -> {
+                viewFactory = new WriterViewFactory();
+                view = viewFactory.getView();
+            }
         }
     }
 }
